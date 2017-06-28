@@ -1,0 +1,37 @@
+User
+-username (unique)
+-name (f, m, l)
+-age
+-weight
+-sex
+-height (inches)
+-BMR (derived)
+
+Routine (users can search other uses routusernines and pre set routines made by "computer users" exist)
+-routineId (unique)
+-routine name
+-exercises
+-day (can set multiple)
+-average rating
+
+Exercise (users can add exercises to the database)
+-exerciseId (unique)
+-exercise name
+-Exercise Type
+-muscles involved
+
+muscle group
+-muscleID
+-primary mover
+-secondary movers (multiple)
+
+Nutrition Log
+-logid
+-userid
+-date
+-weight
+-total calories eaten
+-total protein eaten
+
+
+

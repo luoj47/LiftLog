@@ -1,0 +1,157 @@
+.open LIFTLOG.db
+
+drop table USER;
+drop table ROUTINE;
+drop table MUSCLE_GROUP;
+drop table WEIGHT_LOG;
+drop table EXERCISE;
+drop table ROUTINE_DAY;
+drop table ROUTINE_EXERCISES;
+drop table ROUTINE_REVIEW;
+drop table MUSCLE_GROUP_SECONDARIES;
+
+CREATE TABLE USER
+(
+Username VARCHAR(16) NOT NULL ,
+Name VARCHAR(30) NOT NULL ,
+Age INT NOT NULL CHECK(Age >= 0) ,
+Sex CHAR(1) NOT NULL CHECK(Sex in('M', 'F')) ,
+Height INT NOT NULL CHECK(Height >= 0) ,
+Weight INT NOT NULL CHECK(Weight >= 0) ,
+PRIMARY KEY (Username)
+);
+
+CREATE TABLE ROUTINE
+(
+RoutineId INT NOT NULL ,
+Rname VARCHAR(25) NOT NULL ,
+PRIMARY KEY (RoutineId) 
+);
+
+CREATE TABLE MUSCLE_GROUP
+(
+MgroupId INT NOT NULL,
+PrimaryM VARCHAR(25) NOT NULL,
+PRIMARY KEY (MgroupId)
+);
+
+CREATE TABLE WEIGHT_LOG
+(
+Username VARCHAR(16) NOT NULL,
+LogId INT NOT NULL ,
+Weight INT NOT NULL ,
+Date DATE NOT NULL,
+PRIMARY KEY (Username, LogId),
+CONSTRAINT WLFK1 FOREIGN KEY (Username) REFERENCES User(Username) ON UPDATE CASCADE ON DELETE CASCADE
+);
+
+
+CREATE TABLE EXERCISE
+(
+MGroupId INT NOT NULL ,
+ExerciseId INT NOT NULL ,
+Ename VARCHAR(25) NOT NULL,
+Description VARCHAR(1000),
+PRIMARY KEY (MGroupId),
+CONSTRAINT EXFK1 FOREIGN KEY (MgroupId) REFERENCES MUSCLE_GROUP(MgroupId) ON UPDATE CASCADE ON DELETE CASCADE
+);
+
+CREATE TABLE ROUTINE_DAY
+(
+RoutineId INT NOT NULL ,
+Day VARCHAR(15) NOT NULL ,
+PRIMARY KEY (RoutineId), 
+CONSTRAINT RDFK1 FOREIGN KEY (RoutineId) REFERENCES Routine(RoutineId) ON UPDATE CASCADE ON DELETE CASCADE
+);
+
+
+CREATE TABLE ROUTINE_EXERCISES
+(
+RoutineId INT NOT NULL ,
+ExerciseId INT NOT NULL ,
+Sets INT NOT NULL CHECK(Sets >= 0) ,
+Repetitions INT NOT NULL CHECK(Repetitions >= 0) ,
+Weight INT NOT NULL CHECK(Weight >= 0),
+PRIMARY KEY (RoutineId, ExerciseId), 
+CONSTRAINT REFK1 FOREIGN KEY (RoutineId) REFERENCES ROUTINE(RoutineId) ON UPDATE CASCADE ON DELETE CASCADE,
+CONSTRAINT REFK2 FOREIGN KEY (ExerciseId) REFERENCES EXERCISE(ExerciseId) ON UPDATE CASCADE ON DELETE CASCADE
+);
+
+CREATE TABLE ROUTINE_REVIEW
+(
+RoutineId INT NOT NULL ,
+Username VARCHAR(16) NOT NULL,
+Rating INT NOT NULL CHECK(rating >= 0 and rating <= 5) ,
+PRIMARY KEY (RoutineId, Username), 
+CONSTRAINT RRFK1 FOREIGN KEY (RoutineId) REFERENCES ROUTINE(RoutineId) ON UPDATE CASCADE ON DELETE CASCADE
+);
+
+CREATE TABLE MUSCLE_GROUP_SECONDARIES
+(
+MgroupId INT NOT NULL,
+Secondary VARCHAR(25),
+PRIMARY KEY (MgroupId),
+FOREIGN KEY (MgroupId) REFERENCES MUSCLE_GROUP(MgroupId) ON UPDATE CASCADE ON DELETE CASCADE
+);
+
+insert into USER values ('StrongestMan', 'Jay', 23, 'M', 69, 155);
+insert into USER values ('AlwaysLegDay', 'Sasha', 21, 'M', 65, 119);
+insert into USER values ('FreePizza', 'Janet', 19, 'M', 64, 115);
+
+insert into ROUTINE values (1234, 'Chest and Back');
+insert into ROUTINE values (0000, 'Legs');
+insert into ROUTINE values (7777, 'Posterior Chain');
+insert into ROUTINE values (1111, 'Shoulders and Arms');
+
+insert into MUSCLE_GROUP values (10, 'Chest');
+insert into MUSCLE_GROUP values (11, 'Upper Back');
+insert into MUSCLE_GROUP values (12, 'Hamstrings');
+insert into MUSCLE_GROUP values (13, 'Quads');
+insert into MUSCLE_GROUP values (14, 'Front Delts');
+insert into MUSCLE_GROUP values (15, 'Biceps');
+insert into MUSCLE_GROUP values (16, 'Triceps');
+
+insert into WEIGHT_LOG values ('StrongestMan', 123, 160, '1-1-2016');
+insert into WEIGHT_LOG values ('StrongestMan', 124, 165, '3-1-2016');
+insert into WEIGHT_LOG values ('StrongestMan', 125, 158, '5-1-2016');
+insert into WEIGHT_LOG values ('StrongestMan', 126, 155, '7-1-2016');
+insert into WEIGHT_LOG values ('AlwaysLegDay', 130, 130, '6-23-2016');
+insert into WEIGHT_LOG values ('AlwaysLegDay', 131, 124, '7-1-2016');
+insert into WEIGHT_LOG values ('FreePizza', 140, 110, '9-23-2016');
+
+insert into EXERCISE values (10, 10000, 'Bench Press', 'Position yourself under a barbell, depress your shoulders, grip the barbell so your forearms are perpindicular with the floor. Bring the barbell slowly to your chest, and press back up');
+insert into EXERCISE values (11, 11111, 'Barbell Rows', 'Position a barbell on the ground. Grab the Barbell and slightly wider than shoulder width. Keep your back straight, and bend over. Pull the Barbell to slightly below your chest.');
+insert into EXERCISE values (12, 12222, 'Deadlifts', 'Position a Barbell on the ground. Set up to the bar, and make sure the midpoint of your foot is below the bar. Stand with your feet hip-width apart, and grab the bar at shoulder-width apart. Sit back and keep your back straight, and lift the weight up, focusing on pressing with your legs.');
+insert into EXERCISE values (13, 13333, 'Squats', 'Position a Barbell on your traps and stabilize with your hands. While keeping your back straight, sit back and lower your body until your hips break parallel with the ground. Push back up.');
+insert into EXERCISE values (14, 14444, 'Shoulder Press', 'Position a Dumbbell in each of your hands above your shoulders. Ensure your elbows do not go behind your back. Press the dumbbells and up and shrug your shoulders at the top.');
+insert into EXERCISE values (15, 15555, 'Bicep Curls', 'While holding a dumbbel in each hand, bend at the elbow and keep your upper arm and torso from moving while your bring the dumbbell to your front delt.');
+insert into EXERCISE values (16, 16666, 'Tricep Dips', 'Set up on a dip bar with your chest out and eyes looking forward. Slowly lower your body until your upper arms are parallel with the floor. Press back up.');
+
+insert into ROUTINE_DAY values (1234, 'Monday');
+insert into ROUTINE_DAY values (0000, 'Tuesday');
+insert into ROUTINE_DAY values (7777, 'Wednesday');
+insert into ROUTINE_DAY values (1111, 'Thursday');
+
+insert into ROUTINE_EXERCISES values (1234, 10000, 5, 5, 150);
+insert into ROUTINE_EXERCISES values (1234, 11111, 5, 5, 150);
+insert into ROUTINE_EXERCISES values (0000, 13333, 5, 5, 250);
+insert into ROUTINE_EXERCISES values (7777, 12222, 1, 5, 300);
+insert into ROUTINE_EXERCISES values (1111, 14444, 3, 5, 120);
+insert into ROUTINE_EXERCISES values (1111, 15555, 3, 8, 90);
+insert into ROUTINE_EXERCISES values (1111, 16666, 3, 8, 90);
+
+insert into ROUTINE_REVIEW values (1234, 'StrongestMan', 5);
+insert into ROUTINE_REVIEW values (0000, 'StrongestMan', 4);
+insert into ROUTINE_REVIEW values (0000, 'AlwaysLegDay', 4);
+insert into ROUTINE_REVIEW values (7777, 'StrongestMan', 5);
+insert into ROUTINE_REVIEW values (7777, 'AlwaysLegDay', 5);
+insert into ROUTINE_REVIEW values (1111, 'FreePizza', 1);
+
+insert into MUSCLE_GROUP_SECONDARIES values (10, 'Shoulders');
+insert into MUSCLE_GROUP_SECONDARIES values (11, 'Lats');
+insert into MUSCLE_GROUP_SECONDARIES values (12, 'Lower Back');
+insert into MUSCLE_GROUP_SECONDARIES values (13, 'Glutes');
+insert into MUSCLE_GROUP_SECONDARIES values (14, 'Triceps');
+
+
+PRAGMA foreign_keys=1;
