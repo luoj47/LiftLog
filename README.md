@@ -1,0 +1,2 @@
+# LiftLog
+Lift Log is a database for an application that allows a user to search for exercises and track their progress over time. Users can track their weight changes over time through a weight log. Users can also search for exercises based on which body part they want to work out.  Users can build routines based on their needs or search for routines that other users have created. Users can see and make reviews on routines. 
